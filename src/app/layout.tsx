@@ -1,7 +1,5 @@
-import Link from "next/link";
 import "./globals.css";
-import Image from "next/image";
-import { Bookmark, Search } from "lucide-react";
+import Header from "./components/header";
 
 export default function RootLayout({
 	children,
@@ -11,20 +9,10 @@ export default function RootLayout({
 	return (
 		<html lang="en">
 			<body>
-				<div className="p-5 border-b border-[#dedede] relative">
-					<Link href={"/"} className="link mb-[-4px]">
-						<Image className="w-[120px]" src={"/images/logo.png"} width={256} height={69} alt={"logo"} quality={100} />
-					</Link>
-					<div className="flex gap-x-2.5 absolute right-5 top-[50%] translate-y-[-50%]">
-						<Link href={"/search"} className="btn-option">
-							<Search strokeWidth={3} />
-						</Link>
-						<Link href={"/bookmark"} className="btn-option">
-							<Bookmark strokeWidth={3} />
-						</Link>
-					</div>
+				<div className="xl:w-[1200px] lg:w-full lg:p-[0_40px] m-[0_auto] p-[0_20px]">
+					<Header />
+					{children}
 				</div>
-				{children}
 			</body>
 		</html>
 	);

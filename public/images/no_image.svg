@@ -1,0 +1,31 @@
+<svg width="400" height="300" viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg">
+  <!-- 배경 -->
+  <rect width="400" height="300" fill="#f8f9fa" stroke="#dee2e6" stroke-width="2" stroke-dasharray="10,5"/>
+  
+  <!-- 중앙 아이콘 -->
+  <g transform="translate(200, 120)">
+    <!-- 산 모양 배경 -->
+    <path d="M-60 40 L-30 0 L0 25 L30 -5 L60 40 Z" fill="#e9ecef" stroke="#adb5bd" stroke-width="2"/>
+    
+    <!-- 태양 -->
+    <circle cx="-35" cy="10" r="8" fill="#ffd43b"/>
+    
+    <!-- 이미지 프레임 -->
+    <rect x="-70" y="-10" width="140" height="80" fill="none" stroke="#6c757d" stroke-width="3" rx="5"/>
+  </g>
+  
+  <!-- 텍스트 -->
+  <text x="200" y="220" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#6c757d">
+    이미지 없음
+  </text>
+  
+  <text x="200" y="245" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" fill="#adb5bd">
+    No Image Available
+  </text>
+  
+  <!-- 코너 장식 -->
+  <circle cx="30" cy="30" r="3" fill="#dee2e6"/>
+  <circle cx="370" cy="30" r="3" fill="#dee2e6"/>
+  <circle cx="30" cy="270" r="3" fill="#dee2e6"/>
+  <circle cx="370" cy="270" r="3" fill="#dee2e6"/>
+</svg>
