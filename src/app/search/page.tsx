@@ -1,3 +1,10 @@
+import SearchList from "./ searchList";
+
 export default function Search() {
-	return <div>검색페이지</div>;
+	return (
+		<div>
+			<div className="text-center text-[28px] py-5">검색</div>
+			<SearchList />
+		</div>
+	);
 }

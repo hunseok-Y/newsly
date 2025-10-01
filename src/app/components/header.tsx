@@ -5,7 +5,7 @@ import Link from "next/link";
 export default function Header() {
 	return (
 		<div className="py-5 border-b border-[#dedede] relative">
-			<Link href={"/"} className="link mb-[-4px]">
+			<Link href={"/?category=all"} className="link mb-[-4px]">
 				<Image className="w-[120px]" src={"/images/logo.png"} width={256} height={69} alt={"logo"} quality={100} />
 			</Link>
 			<div className="flex gap-x-2.5 absolute right-5 top-[50%] translate-y-[-50%]">
