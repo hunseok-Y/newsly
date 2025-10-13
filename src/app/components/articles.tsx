@@ -1,99 +1,60 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import TabOption from "../content/tabOption";
 import NewsType from "../../../types/NewsType";
 import Image from "next/image";
 import Link from "next/link";
-import NewsDataHandler from "../hook/useNewsDataHandler";
+import useInfiniteScroll from "../hook/useInfiniteScroll";
 
 export default function NewsArticles({ category }: { category: string }) {
-	// 뉴스 데이터 배열
-	const [newsData, setNewsData] = useState<NewsType[]>([]);
-	// 현재 페이지 번호
-	const [currentPage, setCurrentPage] = useState(1);
-	// 로딩 상태
-	const [loading, setLoading] = useState(false);
-	// 더 불러올 데이터가 있는지
-	const [hasMore, setHasMore] = useState(true);
-	// 위로가기 버튼 표시 여부
-	const [showScrollTop, setShowScrollTop] = useState(false);
 	// 오늘 날짜
 	const toDay = new Date();
 	let year = toDay.getFullYear();
-	let month = ("0" + (toDay.getMonth() + 1)).slice(-2);
+	let month = ("0" + (toDay.getMonth() - 1)).slice(-2);
 	let day = ("0" + toDay.getDate()).slice(-2);
 	const todayFormat = year + "-" + month + "-" + day;
 
-	function loadNewsData(page = 1, isLoadMore = false) {
-		setLoading(true);
+	// 데이터 가져오기 함수
+	const fetchNewsData = async (page: number): Promise<{ data: NewsType[]; hasMore: boolean }> => {
 		let currentCategories = "";
 
 		if (category == "all") {
 			const categoryCopy = [...TabOption];
-			// 배열 첫번째 요소 삭제
 			categoryCopy.shift();
-			// 카테고리 값만 추출해서 배열로 만듬
 			const categoryArray = categoryCopy.map((data) => data.category);
 			currentCategories = categoryArray.join();
 		} else {
 			currentCategories = category;
 		}
 
-		fetch(`/api/news?categories=${currentCategories}&date_from=${todayFormat}&date_to=${todayFormat}&page=${page}&page_size=9`)
-			.then((res) => res.json())
-			.then((res) => {
-				NewsDataHandler({
-					res,
-					isLoadMore,
-					newsData,
-					setNewsData,
-					setHasMore,
-					setLoading,
-				});
-			})
-			.catch((error) => {
-				console.error("API 에러:", error);
-				setLoading(false);
-				setHasMore(false);
-			});
-	}
+		const res = await fetch(`/api/news?categories=${currentCategories}&date_from=${todayFormat}&date_to=${todayFormat}&page=${page}&page_size=9`);
+		const result = await res.json();
 
-	function loadMore() {
-		if (!loading && hasMore) {
-			const nextPage = currentPage + 1;
-			setCurrentPage(nextPage);
-			loadNewsData(nextPage, true);
-		}
-	}
-
-	useEffect(() => {
-		setCurrentPage(1);
-		loadNewsData(1, false);
-	}, [category]);
-
-	// 스크롤 이벤트 감지
-	useEffect(() => {
-		const handleScroll = () => {
-			// 위로가기 버튼 표시/숨김 (300px 이상 스크롤 시)
-			setShowScrollTop(window.scrollY > 300);
-
-			// 무한 스크롤
-			if (window.innerHeight + document.documentElement.scrollTop >= document.documentElement.offsetHeight - 1000 && !loading && hasMore) {
-				loadMore();
-			}
+		return {
+			data: result.data || [],
+			hasMore: result.total_pages ? page < result.total_pages : result.data && result.data.length >= 9,
 		};
-
-		window.addEventListener("scroll", handleScroll);
-		return () => window.removeEventListener("scroll", handleScroll);
-	}, [loading, hasMore, currentPage]);
-
-	const scrollToTop = () => {
-		window.scrollTo({
-			top: 0,
-			behavior: "smooth",
-		});
 	};
+
+	// 무한 스크롤 훅 사용
+	const {
+		data: newsData,
+		loading,
+		hasMore,
+		showScrollTop,
+		scrollToTop,
+		reset,
+	} = useInfiniteScroll<NewsType>({
+		fetchData: fetchNewsData,
+		threshold: 1000,
+		maxItems: 100,
+	});
+
+	// 카테고리 변경 시 초기화
+	useEffect(() => {
+		reset();
+	}, [category]);
 
 	return (
 		<div className="mt-5 grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 gap-2.5 ">

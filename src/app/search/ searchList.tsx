@@ -4,38 +4,55 @@ import { SetStateAction, useEffect, useState } from "react";
 import NewsType from "../../../types/NewsType";
 import Link from "next/link";
 import Image from "next/image";
+import useInfiniteScroll from "../hook/useInfiniteScroll";
 
 export default function SearchList() {
 	const [inputValue, setInputValue] = useState("");
-	const [searchData, setSearchData] = useState<NewsType[]>([]);
-	// 로딩 유무
-	const [loding, setLoading] = useState(false);
+	const [currentKeyword, setCurrentKeyword] = useState("");
 	// 결과 유무
 	const [searchResults, setSearchResults] = useState(false);
 	// 로컬 스토리지 키워드
 	const [keyWord, setKeyWord] = useState<string[]>([]);
 
+	// 검색 데이터 가져오기 함수
+	const fetchSearchData = async (page: number): Promise<{ data: NewsType[]; hasMore: boolean }> => {
+		const res = await fetch(`/api/search?keyword=${currentKeyword}&page=${page}`);
+		const result = await res.json();
+
+		setSearchResults(result.data && result.data.length === 0);
+
+		return {
+			data: result.data || [],
+			hasMore: result.total_pages ? page < result.total_pages : result.data && result.data.length > 0,
+		};
+	};
+
+	// 무한 스크롤 훅 사용
+	const {
+		data: searchData,
+		loading,
+		hasMore,
+		showScrollTop,
+		scrollToTop,
+		reset,
+	} = useInfiniteScroll<NewsType>({
+		fetchData: fetchSearchData,
+		threshold: 1000,
+	});
+
 	function handleSearch(e: React.FormEvent) {
 		e.preventDefault();
-		setLoading(true);
+		setCurrentKeyword(inputValue);
+		addKeyword(inputValue);
 		setSearchResults(false);
-
-		fetch(`/api/search?keyword=${inputValue}`)
-			.then((res) => res.json())
-			.then((data) => {
-				setSearchData(data.data);
-				setLoading(false);
-				addKeyword(inputValue);
-				if (data.data.length <= 0) {
-					setSearchResults(true);
-				} else {
-					setSearchResults(false);
-				}
-			})
-			.catch((error) => {
-				console.error("검색 에러:", error);
-			});
 	}
+
+	// currentKeyword 변경 시 검색 실행
+	useEffect(() => {
+		if (currentKeyword) {
+			reset();
+		}
+	}, [currentKeyword]);
 
 	// 로컬스토리지에 접근해서 keyword 정보 가져오기
 	useEffect(() => {
@@ -116,12 +133,24 @@ export default function SearchList() {
 					);
 				})}
 			</div>
-			{loding && (
+			{loading && (
 				<div className="col-span-full text-center py-4">
 					<div className="text-gray-500">로딩 중...</div>
 				</div>
 			)}
 			{searchResults && <div className="text-gray-500">검색 결과가 없습니다.</div>}
+
+			{/* 위로가기 버튼 */}
+			{showScrollTop && (
+				<button
+					onClick={scrollToTop}
+					className="fixed bottom-6 right-6 bg-blue-500 hover:bg-blue-600 text-white p-3 rounded-full shadow-lg transition-all duration-300 z-50"
+					aria-label="위로가기">
+					<svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+						<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 10l7-7m0 0l7 7m-7-7v18" />
+					</svg>
+				</button>
+			)}
 		</div>
 	);
 }

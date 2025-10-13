@@ -4,6 +4,7 @@ const NEWS_API_KEY = process.env.NEXT_PUBLIC_NEWS_API;
 
 export async function GET(request: NextRequest) {
 	const searchParams = request.nextUrl.searchParams;
+	console.log(searchParams);
 	const categories = searchParams.get("categories");
 	const dateFrom = searchParams.get("date_from");
 	const dateTo = searchParams.get("date_to");
