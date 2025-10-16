@@ -6,12 +6,13 @@ import NewsType from "../../../types/NewsType";
 import Image from "next/image";
 import Link from "next/link";
 import useInfiniteScroll from "../hook/useInfiniteScroll";
+import BookMarkButton from "./bookMarkButton";
 
 export default function NewsArticles({ category }: { category: string }) {
 	// 오늘 날짜
 	const toDay = new Date();
 	let year = toDay.getFullYear();
-	let month = ("0" + (toDay.getMonth() - 1)).slice(-2);
+	let month = ("0" + (toDay.getMonth() + 1)).slice(-2);
 	let day = ("0" + toDay.getDate()).slice(-2);
 	const todayFormat = year + "-" + month + "-" + day;
 
@@ -61,7 +62,7 @@ export default function NewsArticles({ category }: { category: string }) {
 			{newsData
 				? newsData.map((item: NewsType, i: number) => {
 						return (
-							<div key={i} className="rounded-[10px] overflow-hidden shadow-[0_2px_8px_rgba(0,0,0,0.08)]">
+							<div key={i} className="rounded-[10px] overflow-hidden shadow-[0_2px_8px_rgba(0,0,0,0.08)] ">
 								<div className="w-full h-[180px] relative">
 									{item.image_url ? (
 										<Image
@@ -78,10 +79,11 @@ export default function NewsArticles({ category }: { category: string }) {
 									)}
 								</div>
 								<div className="p-[10px_20px]">
-									<Link href={item.content_url} about="_blank">
-										<div className="text-[16px] font-semibold mb-1.5 overflow-hidden leading-[1.4] overflow-ellipsis whitespace-nowrap">{item.title}</div>
+									<Link href={item.content_url} target="_blank">
+										<div className="text-[16px] font-semibold mb-1.5 overflow-hidden leading-[1.4] overflow-ellipsis whitespace-nowrap ">{item.title}</div>
 										<div className="ellipsis text-[14px] mb-2.5 text-[#6b7280] leading-[1.2]">{item.summary}</div>
 									</Link>
+									<BookMarkButton data={item} />
 								</div>
 							</div>
 						);
