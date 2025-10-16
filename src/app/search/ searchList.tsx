@@ -5,6 +5,7 @@ import NewsType from "../../../types/NewsType";
 import Link from "next/link";
 import Image from "next/image";
 import useInfiniteScroll from "../hook/useInfiniteScroll";
+import BookMarkButton from "../components/bookMarkButton";
 
 export default function SearchList() {
 	const [inputValue, setInputValue] = useState("");
@@ -83,12 +84,22 @@ export default function SearchList() {
 	return (
 		<div>
 			<div className="flex gap-x-2.5">
-				<input type="text" value={inputValue} placeholder="검색어를 입력하세요" onChange={inputChange} id="search" className="border px-5 border-[#dedede] w-full rounded-[10px]" />
-				<button onClick={handleSearch} className="w-[60px] h-[40px] text-white bg-(--color-primary) rounded-[10px]" type="submit">
+				<input
+					type="text"
+					value={inputValue}
+					placeholder="검색어를 입력하세요"
+					onChange={inputChange}
+					id="search"
+					className="border text-[12px] sm:text-[16px] px-2.5 sm:px-5 border-[#dedede] w-full rounded-[8px] sm:rounded-[10px]"
+				/>
+				<button
+					onClick={handleSearch}
+					className="w-[60px] h-[30px] sm:h-[40px] flex-[0_0_auto] text-white bg-(--color-primary) rounded-[8px] sm:rounded-[10px] text-[12px] sm:text-[16px]"
+					type="submit">
 					검색
 				</button>
 			</div>
-			<div className="flex gap-x-2.5 py-5">
+			<div className="flex gap-x-2.5 py-2.5 sm:py-5 text-[12px] sm:text-[18px]">
 				<span>최근 검색어 :</span>
 				<div className=" flex gap-x-1 ">
 					{keyWord
@@ -108,7 +119,7 @@ export default function SearchList() {
 				{searchData.map((item, i) => {
 					return (
 						<div key={i} className="rounded-[10px] overflow-hidden shadow-[0_2px_8px_rgba(0,0,0,0.08)]">
-							<div className="w-full h-[180px] relative">
+							<div className="w-full h-[120px] sm:h-[180px] relative">
 								{item.image_url ? (
 									<Image
 										className="img-set"
@@ -125,9 +136,12 @@ export default function SearchList() {
 							</div>
 							<div className="p-[10px_20px]">
 								<Link href={item.content_url} about="_blank">
-									<div className="text-[16px] font-semibold mb-1.5 overflow-hidden leading-[1.4] overflow-ellipsis whitespace-nowrap">{item.title}</div>
-									<div className="ellipsis text-[14px] mb-2.5 text-[#6b7280] leading-[1.2]">{item.summary}</div>
+									<div className="text-[14px] sm:text-[16px] font-semibold mb-1.5 overflow-hidden leading-[1.2] sm:leading-[1.4] overflow-ellipsis whitespace-nowrap">
+										{item.title}
+									</div>
+									<div className="ellipsis text-[12px] sm:text-[14px] mb-2.5 text-[#6b7280] leading-[1.2]">{item.summary}</div>
 								</Link>
+								<BookMarkButton data={item} />
 							</div>
 						</div>
 					);

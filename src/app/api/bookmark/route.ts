@@ -4,7 +4,6 @@ import { NextRequest, NextResponse } from "next/server";
 export async function GET() {
 	try {
 		const db = (await connectDB).db("newsly");
-		// 데이터를 find 찾아와서 toArray배열로 꿔라
 		let result = await db.collection("bookmark").find().toArray();
 		return NextResponse.json(result);
 	} catch (error) {

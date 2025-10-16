@@ -10,8 +10,8 @@
 }
 
 .btn-option {
-	width: 50px;
-	height: 50px;
+	width: 30px;
+	height: 30px;
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -19,6 +19,13 @@
 	border-radius: 50%;
 	font-weight: 500;
 	@apply text-(--color-primary);
+	padding: 6px;
+}
+@media screen and (min-width: 1024px) {
+	.btn-option {
+		width: 50px;
+		height: 50px;
+	}
 }
 
 .btn-option:hover {

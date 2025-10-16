@@ -7,7 +7,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ c
 	const selectedCategory = params.category || "all";
 
 	return (
-		<div>
+		<div className="">
 			<Tab option={TabOption} />
 			<Articles category={selectedCategory} />
 		</div>

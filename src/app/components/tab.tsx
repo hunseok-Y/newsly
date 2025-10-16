@@ -21,7 +21,7 @@ export default function Tab({ option }: { option: TabType[] }) {
 	}, [categoryName, option]);
 
 	return (
-		<div className="py-5 flex gap-x-2.5 overflow-x-auto" ref={containerRef}>
+		<div className="py-3 xl:py-5 flex gap-1.5 xl:gap-x-2.5 overflow-x-auto w-full" ref={containerRef}>
 			{option.map((tab, i) => {
 				return (
 					<Link
@@ -29,8 +29,8 @@ export default function Tab({ option }: { option: TabType[] }) {
 						href={`/?category=${tab.category}`}
 						className={
 							categoryName == tab.category
-								? "px-5 py-2.5 rounded-[20px] text-[14px] bg-(--color-primary) text-white flex-[0_0_auto]"
-								: "px-5 py-2.5 border-[1px] border-solid border-[#e0e0e0] text-[#2d2d2d] rounded-[20px] flex-[0_0_auto] text-[14px] hover:bg-(--color-primary) hover:text-white transition-all transition-0.4s"
+								? "px-2.5 py-1.5 rounded-[20px] text-[12px] xl:px-5 xl:py-2.5 xl:text-[14px] bg-(--color-primary) text-white flex-[0_0_auto]"
+								: "px-2.5 py-1.5 rounded-[20px] text-[12px] xl:px-5 xl:py-2.5 xl:text-[14px] border-[1px] border-solid border-[#e0e0e0] text-[#2d2d2d] flex-[0_0_auto] hover:bg-(--color-primary) hover:text-white transition-all transition-0.4s"
 						}>
 						{tab.title}
 					</Link>

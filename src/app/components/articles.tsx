@@ -58,12 +58,12 @@ export default function NewsArticles({ category }: { category: string }) {
 	}, [category]);
 
 	return (
-		<div className="mt-5 grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 gap-2.5 ">
+		<div className="mt-2.5 sm:mt-5 grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 gap-2.5 ">
 			{newsData
 				? newsData.map((item: NewsType, i: number) => {
 						return (
 							<div key={i} className="rounded-[10px] overflow-hidden shadow-[0_2px_8px_rgba(0,0,0,0.08)] ">
-								<div className="w-full h-[180px] relative">
+								<div className="w-full h-[120px] sm:h-[180px] relative">
 									{item.image_url ? (
 										<Image
 											className="img-set"
@@ -80,8 +80,10 @@ export default function NewsArticles({ category }: { category: string }) {
 								</div>
 								<div className="p-[10px_20px]">
 									<Link href={item.content_url} target="_blank">
-										<div className="text-[16px] font-semibold mb-1.5 overflow-hidden leading-[1.4] overflow-ellipsis whitespace-nowrap ">{item.title}</div>
-										<div className="ellipsis text-[14px] mb-2.5 text-[#6b7280] leading-[1.2]">{item.summary}</div>
+										<div className="text-[14px] sm:text-[16px] font-semibold mb-1.5 overflow-hidden leading-[1.2] sm:leading-[1.4] overflow-ellipsis whitespace-nowrap ">
+											{item.title}
+										</div>
+										<div className="ellipsis text-[12px] sm:text-[14px] mb-2.5 text-[#6b7280] leading-[1.2]">{item.summary}</div>
 									</Link>
 									<BookMarkButton data={item} />
 								</div>
