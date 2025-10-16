@@ -92,13 +92,13 @@ export default function NewsArticles({ category }: { category: string }) {
 				  })
 				: null}
 			{loading && (
-				<div className="col-span-full text-center py-4">
-					<div className="text-gray-500">로딩 중...</div>
+				<div className="col-span-full text-center py-3 sm:py-4">
+					<div className="text-gray-500 text-[12px] sm:text-[16px]">로딩 중...</div>
 				</div>
 			)}
 			{newsData.length >= 100 && (
-				<div className="col-span-full text-center py-4">
-					<div className="text-gray-500">총 100개의 게시물을 모두 불러왔습니다.</div>
+				<div className="col-span-full text-center py-3 sm:py-4">
+					<div className="text-gray-500 text-[12px] sm:text-[16px]">총 100개의 게시물을 모두 불러왔습니다.</div>
 				</div>
 			)}
 
