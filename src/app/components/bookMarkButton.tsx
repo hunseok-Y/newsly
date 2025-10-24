@@ -18,48 +18,51 @@ export default function BookMarkButton({ data, mode = "toggle", initialBookmarke
 	const handleClick = async () => {
 		if (isLoading) return; // 중복 클릭 방지
 
-		try {
-			setIsLoading(true);
+		setIsLoading(true);
 
-			if (mode === "delete-only") {
-				// 삭제 전용 모드: 삭제만 가능
-				if (isBookmark) {
-					const response = await fetch("/api/bookmark", {
-						method: "DELETE",
-						headers: { "Content-Type": "application/json" },
-						body: JSON.stringify({ id: data.id }),
-					});
-
-					if (response.ok) {
-						setIsBookmark(false);
-						// 부모 컴포넌트에 삭제 성공 알림
-						if (onDelete) {
-							onDelete();
-						}
-					} else {
-						const error = await response.json();
-						console.error("북마크 삭제 실패:", error);
-						alert("북마크 삭제에 실패했습니다.");
-					}
+		if (mode === "delete-only") {
+			// 삭제 전용 모드: 즉시 UI 업데이트
+			if (isBookmark) {
+				// 낙관적 업데이트: 먼저 UI 변경
+				setIsBookmark(false);
+				if (onDelete) {
+					onDelete();
 				}
-			} else {
-				// 토글 모드: 추가/삭제 가능
-				if (isBookmark) {
-					// 북마크 삭제
+
+				// 백그라운드에서 API 호출
+				try {
 					const response = await fetch("/api/bookmark", {
 						method: "DELETE",
 						headers: { "Content-Type": "application/json" },
 						body: JSON.stringify({ id: data.id }),
 					});
 
-					if (response.ok) {
-						setIsBookmark(false);
-					} else {
+					if (!response.ok) {
+						// 실패 시 원래 상태로 되돌림
 						const error = await response.json();
 						console.error("북마크 삭제 실패:", error);
+						setIsBookmark(true);
 						alert("북마크 삭제에 실패했습니다.");
 					}
-				} else {
+				} catch (error) {
+					// 네트워크 에러 시 원래 상태로 되돌림
+					console.error("북마크 삭제 중 에러:", error);
+					setIsBookmark(true);
+					alert("북마크 삭제 중 오류가 발생했습니다.");
+				} finally {
+					setIsLoading(false);
+				}
+			}
+		} else {
+			// 토글 모드: 즉시 UI 업데이트
+			const previousState = isBookmark;
+			const newState = !isBookmark;
+
+			// 낙관적 업데이트: 먼저 UI 변경
+			setIsBookmark(newState);
+
+			try {
+				if (newState) {
 					// 북마크 추가
 					const response = await fetch("/api/bookmark", {
 						method: "POST",
@@ -73,20 +76,37 @@ export default function BookMarkButton({ data, mode = "toggle", initialBookmarke
 						}),
 					});
 
-					if (response.ok) {
-						setIsBookmark(true);
-					} else {
+					if (!response.ok) {
+						// 실패 시 원래 상태로 되돌림
 						const error = await response.json();
 						console.error("북마크 추가 실패:", error);
+						setIsBookmark(previousState);
 						alert("북마크 추가에 실패했습니다.");
 					}
+				} else {
+					// 북마크 삭제
+					const response = await fetch("/api/bookmark", {
+						method: "DELETE",
+						headers: { "Content-Type": "application/json" },
+						body: JSON.stringify({ id: data.id }),
+					});
+
+					if (!response.ok) {
+						// 실패 시 원래 상태로 되돌림
+						const error = await response.json();
+						console.error("북마크 삭제 실패:", error);
+						setIsBookmark(previousState);
+						alert("북마크 삭제에 실패했습니다.");
+					}
 				}
+			} catch (error) {
+				// 네트워크 에러 시 원래 상태로 되돌림
+				console.error("북마크 처리 중 에러:", error);
+				setIsBookmark(previousState);
+				alert("북마크 처리 중 오류가 발생했습니다.");
+			} finally {
+				setIsLoading(false);
 			}
-		} catch (error) {
-			console.error("북마크 처리 중 에러:", error);
-			alert("북마크 처리 중 오류가 발생했습니다.");
-		} finally {
-			setIsLoading(false);
 		}
 	};
 
