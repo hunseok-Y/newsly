@@ -8,9 +8,10 @@ type BookMarkButtonProps = {
 	data: NewsType | any;
 	mode?: "toggle" | "delete-only";
 	initialBookmarked?: boolean;
+	onDelete?: () => void;
 };
 
-export default function BookMarkButton({ data, mode = "toggle", initialBookmarked = false }: BookMarkButtonProps) {
+export default function BookMarkButton({ data, mode = "toggle", initialBookmarked = false, onDelete }: BookMarkButtonProps) {
 	const [isBookmark, setIsBookmark] = useState(initialBookmarked);
 	const [isLoading, setIsLoading] = useState(false);
 
@@ -31,6 +32,10 @@ export default function BookMarkButton({ data, mode = "toggle", initialBookmarke
 
 					if (response.ok) {
 						setIsBookmark(false);
+						// 부모 컴포넌트에 삭제 성공 알림
+						if (onDelete) {
+							onDelete();
+						}
 					} else {
 						const error = await response.json();
 						console.error("북마크 삭제 실패:", error);
