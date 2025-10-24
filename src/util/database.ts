@@ -1,6 +1,6 @@
 import { MongoClient } from "mongodb";
 
-const url = "mongodb+srv://gnstjr5911_db_user:ghehf6737@cluster0.vhv68jv.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
+const url = process.env.MONGODB_URI || "";
 declare global {
 	var _mongo: Promise<MongoClient> | undefined;
 }

@@ -32,6 +32,7 @@ export default function BookMarkList({ result }: { result: BookmarkType[] }) {
 								<div className="ellipsis text-[12px] sm:text-[14px] mb-2.5 text-[#6b7280] leading-[1.2]">{item.summary}</div>
 							</Link>
 							{/* mode 추가해서 북마크 페이지인지 구분 */}
+							{/* initialBookmarked 현재 북마크가 활성화가 됐는지 확인 */}
 							<BookMarkButton data={item} mode="delete-only" initialBookmarked={true} />
 						</div>
 					</div>
