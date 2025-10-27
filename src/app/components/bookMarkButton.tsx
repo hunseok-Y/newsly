@@ -5,7 +5,7 @@ import NewsType from "../../../types/NewsType";
 import { Bookmark } from "lucide-react";
 
 type BookMarkButtonProps = {
-	data: NewsType | any;
+	data: NewsType;
 	mode?: "toggle" | "delete-only";
 	initialBookmarked?: boolean;
 	onDelete?: () => void;
@@ -14,81 +14,66 @@ type BookMarkButtonProps = {
 export default function BookMarkButton({ data, mode = "toggle", initialBookmarked = false, onDelete }: BookMarkButtonProps) {
 	const [isBookmark, setIsBookmark] = useState(initialBookmarked);
 
+	// 북마크 추가 API 호출
+	const addBookmark = async (previousState: boolean) => {
+		try {
+			const response = await fetch("/api/bookmark", {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({
+					id: data.id,
+					title: data.title,
+					content_url: data.content_url,
+					summary: data.summary,
+					image_url: data.image_url,
+				}),
+			});
+
+			if (!response.ok) {
+				console.error("북마크 추가 실패");
+				setIsBookmark(previousState);
+			}
+		} catch (error) {
+			console.error("북마크 추가 중 에러:", error);
+			setIsBookmark(previousState);
+		}
+	};
+
+	// 북마크 삭제 API 호출
+	const deleteBookmark = async (previousState: boolean) => {
+		try {
+			const response = await fetch("/api/bookmark", {
+				method: "DELETE",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({ id: data.id }),
+			});
+
+			if (!response.ok) {
+				console.error("북마크 삭제 실패");
+				setIsBookmark(previousState);
+			}
+		} catch (error) {
+			console.error("북마크 삭제 중 에러:", error);
+			setIsBookmark(previousState);
+		}
+	};
+
 	const handleClick = () => {
 		if (mode === "delete-only") {
 			// 삭제 전용 모드: 즉시 UI 업데이트
-			if (isBookmark) {
-				setIsBookmark(false);
-				if (onDelete) {
-					onDelete();
-				}
-
-				// 백그라운드에서 API 호출 (await 없이)
-				fetch("/api/bookmark", {
-					method: "DELETE",
-					headers: { "Content-Type": "application/json" },
-					body: JSON.stringify({ id: data.id }),
-				})
-					.then((response) => {
-						if (!response.ok) {
-							// 실패 시 원래 상태로 되돌림
-							console.error("북마크 삭제 실패");
-							setIsBookmark(true);
-						}
-					})
-					.catch((error) => {
-						console.error("북마크 삭제 중 에러:", error);
-						setIsBookmark(true);
-					});
-			}
+			setIsBookmark(false);
+			onDelete?.();
+			deleteBookmark(true);
 		} else {
 			// 토글 모드: 즉시 UI 업데이트
 			const previousState = isBookmark;
 			const newState = !isBookmark;
-
-			// 즉시 UI 변경
 			setIsBookmark(newState);
 
 			if (newState) {
-				// 북마크 추가
-				fetch("/api/bookmark", {
-					method: "POST",
-					headers: { "Content-Type": "application/json" },
-					body: JSON.stringify({
-						id: data.id,
-						title: data.title,
-						content_url: data.content_url,
-						summary: data.summary,
-						image_url: data.image_url,
-					}),
-				})
-					.then((response) => {
-						if (!response.ok) {
-							console.error("북마크 추가 실패");
-							setIsBookmark(previousState);
-						}
-					})
-					.catch((error) => {
-						console.error("북마크 처리 중 에러:", error);
-						setIsBookmark(previousState);
-					});
+				addBookmark(previousState);
 			} else {
-				// 북마크 삭제
-				fetch("/api/bookmark", {
-					method: "DELETE",
-					headers: { "Content-Type": "application/json" },
-					body: JSON.stringify({ id: data.id }),
-				})
-					.then((response) => {
-						if (!response.ok) {
-							console.error("북마크 삭제 실패");
-							setIsBookmark(previousState);
-						}
-					})
-					.catch((error) => {
-						console.error("북마크 처리 중 에러:", error);
-						setIsBookmark(previousState);
-					});
+				deleteBookmark(previousState);
 			}
 		}
 	};
