@@ -1,5 +1,7 @@
 # Newsly - FrontEnd
 
+링크 : https://newsly-alpha.vercel.app/
+
 ## 프로젝트 소개
 
 Newsly는 오늘의 모든 뉴스들을 보여주는 홈페이지 입니다.
