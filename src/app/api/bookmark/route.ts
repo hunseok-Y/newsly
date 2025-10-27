@@ -36,10 +36,17 @@ export async function POST(request: NextRequest) {
 export async function DELETE(request: NextRequest) {
 	try {
 		const db = (await connectDB).db("newsly");
-		const body = await request.json();
+
+		// URL에서 id 파라미터 가져오기 (body 대신 query parameter 사용)
+		const { searchParams } = new URL(request.url);
+		const id = searchParams.get("id");
+
+		if (!id) {
+			return NextResponse.json({ error: "id 파라미터가 필요합니다" }, { status: 400 });
+		}
 
 		// id 필드로 삭제 (MongoDB의 _id가 아닌 커스텀 id 필드 사용)
-		const result = await db.collection("bookmark").deleteOne({ id: body.id });
+		const result = await db.collection("bookmark").deleteOne({ id });
 
 		if (result.deletedCount === 0) {
 			return NextResponse.json({ error: "삭제할 북마크를 찾을 수 없습니다" }, { status: 404 });
