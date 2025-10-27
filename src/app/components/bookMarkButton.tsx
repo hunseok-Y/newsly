@@ -18,7 +18,6 @@ export default function BookMarkButton({ data, mode = "toggle", initialBookmarke
 		if (mode === "delete-only") {
 			// 삭제 전용 모드: 즉시 UI 업데이트
 			if (isBookmark) {
-				// 즉시 UI 변경
 				setIsBookmark(false);
 				if (onDelete) {
 					onDelete();
@@ -29,16 +28,18 @@ export default function BookMarkButton({ data, mode = "toggle", initialBookmarke
 					method: "DELETE",
 					headers: { "Content-Type": "application/json" },
 					body: JSON.stringify({ id: data.id }),
-				}).then(response => {
-					if (!response.ok) {
-						// 실패 시 원래 상태로 되돌림
-						console.error("북마크 삭제 실패");
+				})
+					.then((response) => {
+						if (!response.ok) {
+							// 실패 시 원래 상태로 되돌림
+							console.error("북마크 삭제 실패");
+							setIsBookmark(true);
+						}
+					})
+					.catch((error) => {
+						console.error("북마크 삭제 중 에러:", error);
 						setIsBookmark(true);
-					}
-				}).catch(error => {
-					console.error("북마크 삭제 중 에러:", error);
-					setIsBookmark(true);
-				});
+					});
 			}
 		} else {
 			// 토글 모드: 즉시 UI 업데이트
@@ -58,32 +59,36 @@ export default function BookMarkButton({ data, mode = "toggle", initialBookmarke
 						title: data.title,
 						content_url: data.content_url,
 						summary: data.summary,
-						image_url: data.image_url
+						image_url: data.image_url,
 					}),
-				}).then(response => {
-					if (!response.ok) {
-						console.error("북마크 추가 실패");
+				})
+					.then((response) => {
+						if (!response.ok) {
+							console.error("북마크 추가 실패");
+							setIsBookmark(previousState);
+						}
+					})
+					.catch((error) => {
+						console.error("북마크 처리 중 에러:", error);
 						setIsBookmark(previousState);
-					}
-				}).catch(error => {
-					console.error("북마크 처리 중 에러:", error);
-					setIsBookmark(previousState);
-				});
+					});
 			} else {
 				// 북마크 삭제
 				fetch("/api/bookmark", {
 					method: "DELETE",
 					headers: { "Content-Type": "application/json" },
 					body: JSON.stringify({ id: data.id }),
-				}).then(response => {
-					if (!response.ok) {
-						console.error("북마크 삭제 실패");
+				})
+					.then((response) => {
+						if (!response.ok) {
+							console.error("북마크 삭제 실패");
+							setIsBookmark(previousState);
+						}
+					})
+					.catch((error) => {
+						console.error("북마크 처리 중 에러:", error);
 						setIsBookmark(previousState);
-					}
-				}).catch(error => {
-					console.error("북마크 처리 중 에러:", error);
-					setIsBookmark(previousState);
-				});
+					});
 			}
 		}
 	};
