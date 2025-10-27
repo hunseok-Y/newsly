@@ -56,7 +56,8 @@ export default function BookMarkButton({ data, mode = "toggle", initialBookmarke
 			});
 
 			if (!response.ok) {
-				console.error("북마크 삭제 실패");
+				const errorData = await response.json().catch(() => ({}));
+				console.error("북마크 삭제 실패:", response.status, errorData);
 				setIsBookmark(previousState);
 			}
 		} catch (error) {
