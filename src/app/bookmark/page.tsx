@@ -2,6 +2,10 @@ import { connectDB } from "@/util/database";
 import BookMarkList from "./bookmarkList";
 import { BookmarkType, Post } from "../../../types/bookmarkType";
 
+// 동적 렌더링 강제 (Vercel 캐싱 방지)
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export default async function BookMark() {
 	// const client = await connectDB;
 	// const db = client.db("newsly")
