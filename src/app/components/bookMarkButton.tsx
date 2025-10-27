@@ -1,11 +1,18 @@
 "use client";
 
 import { useState } from "react";
-import NewsType from "../../../types/NewsType";
 import { Bookmark } from "lucide-react";
 
+type BookmarkData = {
+	id: string;
+	title: string;
+	content_url: string;
+	summary: string;
+	image_url: string;
+};
+
 type BookMarkButtonProps = {
-	data: NewsType;
+	data: BookmarkData;
 	mode?: "toggle" | "delete-only";
 	initialBookmarked?: boolean;
 	onDelete?: () => void;
