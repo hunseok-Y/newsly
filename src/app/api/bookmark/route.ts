@@ -38,6 +38,7 @@ export async function DELETE(request: NextRequest) {
 		const db = (await connectDB).db("newsly");
 
 		// URL에서 id 파라미터 가져오기 (body 대신 query parameter 사용)
+		// 그냥 request.url로 가져오면 text로만 가져오니깐 url객체로 변환해서 가져옴
 		const { searchParams } = new URL(request.url);
 		const id = searchParams.get("id");
 

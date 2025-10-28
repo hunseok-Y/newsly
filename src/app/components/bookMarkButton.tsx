@@ -50,7 +50,8 @@ export default function BookMarkButton({ data, mode = "toggle", initialBookmarke
 	const deleteBookmark = async (previousState: boolean) => {
 		try {
 			// body 대신 query parameter로 id 전달
-			const response = await fetch(`/api/bookmark?id=${encodeURIComponent(data.id)}`, {
+			// id를 인자로 받은 문자열을 URL에 포함될 수 있는 형태로 인코딩
+			const response = await fetch(`/api/bookmark?id=${data.id}`, {
 				method: "DELETE",
 			});
 
@@ -65,6 +66,7 @@ export default function BookMarkButton({ data, mode = "toggle", initialBookmarke
 		}
 	};
 
+	// 북마크 버튼 클릭시 delete-only인 구별해서 적용
 	const handleClick = () => {
 		if (mode === "delete-only") {
 			// 삭제 전용 모드: 즉시 UI 업데이트
