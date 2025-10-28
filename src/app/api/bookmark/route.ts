@@ -41,12 +41,6 @@ export async function DELETE(request: NextRequest) {
 		// 그냥 request.url로 가져오면 text로만 가져오니깐 url객체로 변환해서 가져옴
 		const { searchParams } = new URL(request.url);
 		const id = searchParams.get("id");
-
-		if (!id) {
-			return NextResponse.json({ error: "id 파라미터가 필요합니다" }, { status: 400 });
-		}
-
-		// id 필드로 삭제 (MongoDB의 _id가 아닌 커스텀 id 필드 사용)
 		const result = await db.collection("bookmark").deleteOne({ id });
 
 		if (result.deletedCount === 0) {

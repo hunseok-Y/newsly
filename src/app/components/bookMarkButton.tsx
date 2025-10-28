@@ -50,7 +50,6 @@ export default function BookMarkButton({ data, mode = "toggle", initialBookmarke
 	const deleteBookmark = async (previousState: boolean) => {
 		try {
 			// body 대신 query parameter로 id 전달
-			// id를 인자로 받은 문자열을 URL에 포함될 수 있는 형태로 인코딩
 			const response = await fetch(`/api/bookmark?id=${data.id}`, {
 				method: "DELETE",
 			});
